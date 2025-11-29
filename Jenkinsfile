@@ -51,12 +51,10 @@ pipeline {
                 script {
                     echo "Preparing environment configuration..."
 
-                    // Load credentials from Jenkins
                     withCredentials([
                         string(credentialsId: 'MYSQL_ROOT_PASSWORD', variable: 'MYSQL_ROOT_PASS'),
                         string(credentialsId: 'MYSQL_PASSWORD', variable: 'MYSQL_PASS')
                     ]) {
-                        // Create .env file
                         sh """
                             cat > .env <<EOF
 MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASS}
@@ -74,9 +72,7 @@ EOF
                         """
                     }
 
-                    echo "Environment configuration created"
-                    // Don't print .env to avoid exposing passwords in logs
-                    sh 'echo ".env file created successfully"'
+                    echo ".env file created successfully"
                 }
             }
         }
@@ -86,7 +82,6 @@ EOF
                 script {
                     echo "Deploying to production using Docker Compose..."
 
-                    // Stop existing containers
                     def downCommand = 'docker compose down'
                     if (params.CLEAN_VOLUMES) {
                         echo "WARNING: Removing volumes (database will be cleared)"
@@ -94,7 +89,6 @@ EOF
                     }
                     sh downCommand
 
-                    // Build and start services
                     sh """
                         docker compose build --no-cache
                         docker compose up -d
@@ -109,16 +103,16 @@ EOF
             steps {
                 script {
                     echo "Waiting for services to start..."
-                    sh 'sleep 15'
+                    // Give MySQL + API plenty of time to be fully ready
+                    sh 'sleep 45'
 
                     echo "Performing health check..."
 
                     sh """
-                        # Check if containers are running
                         docker compose ps
 
-                        # Wait for API to be ready (max 60 seconds)
-                        timeout 60 bash -c 'until curl -f http://localhost:3001/health; do sleep 2; done' || exit 1
+                        # Wait for API to be ready (max 180 seconds)
+                        timeout 180 bash -c 'until curl -f http://localhost:3001/health; do sleep 2; done' || exit 1
 
                         # Check attractions endpoint
                         curl -f http://localhost:3001/attractions || exit 1
@@ -177,10 +171,7 @@ EOF
         always {
             echo "Cleaning up old Docker resources..."
             sh """
-                # Remove dangling images
                 docker image prune -f
-
-                # Remove old containers
                 docker container prune -f
             """
         }
