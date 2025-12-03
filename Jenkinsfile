@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    options {
+        timestamps()
+    }
+
     triggers {
         // Poll SCM as fallback if webhook fails
         pollSCM('H/2 * * * *')
@@ -10,6 +14,8 @@ pipeline {
         // Build Information
         BUILD_TAG = "${env.BUILD_NUMBER}"
         GIT_COMMIT_SHORT = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+        COMPOSE_DOCKER_CLI_BUILD = '1'
+        DOCKER_BUILDKIT = '0'
     }
 
     parameters {
@@ -89,10 +95,15 @@ EOF
                     }
                     sh downCommand
 
-                    sh """
-                        docker compose build --no-cache
-                        docker compose up -d
-                    """
+                    retry(2) {
+                        timeout(time: 20, unit: 'MINUTES') {
+                            sh "docker compose build --no-cache"
+                        }
+                    }
+
+                    retry(2) {
+                        sh "docker compose up -d"
+                    }
 
                     echo "Deployment completed"
                 }
