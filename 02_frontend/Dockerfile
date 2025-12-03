@@ -13,17 +13,19 @@ RUN npm ci && npm cache clean --force
 # Copy source files and build
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1 \
-    API_HOST=${API_HOST}
+    NEXT_PUBLIC_API_HOST=${API_HOST}
 RUN npm run build
 
 
 # ---------- Stage 2: Production runtime ----------
 FROM node:20-alpine AS runner
+ARG API_HOST=http://localhost:3001
 
 WORKDIR /app
 
 ENV NODE_ENV=production \
-    NEXT_TELEMETRY_DISABLED=1
+    NEXT_TELEMETRY_DISABLED=1 \
+    NEXT_PUBLIC_API_HOST=${API_HOST}
 
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs && \

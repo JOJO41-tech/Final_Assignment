@@ -6,7 +6,11 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_API_HOST: API_HOST,
   },
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'example.com', pathname: '/**' },
+    ],
+  },
 };
 
 export default nextConfig;
-

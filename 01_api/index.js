@@ -1,7 +1,7 @@
 const express = require('express');
 const mysql = require('mysql2/promise');
 const cors = require('cors');
-require('dotenv').config({ path: '.env.local' });
+require('dotenv').config();
 
 const app = express();
 app.use(express.json());
@@ -13,7 +13,7 @@ const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'dit312_6090059',
+  database: process.env.DB_NAME || 'dit312_6703466',
   port: Number(process.env.DB_PORT || 3306),
   waitForConnections: true,
   connectionLimit: 10,
@@ -60,9 +60,11 @@ app.get('/health', async (req, res) => {
   }
 });
 
-app.get('/attractions', async (req, res) => {
+app.get('/videogames', async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM attraction');
+    const [rows] = await pool.query(
+      'SELECT id, title, genre, description, coverimage, platform, year FROM videogame'
+    );
     res.json(rows);
   } catch (e) {
     console.error(e);

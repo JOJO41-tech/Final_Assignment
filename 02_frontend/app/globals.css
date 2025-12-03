@@ -98,6 +98,7 @@ html, body {
 /* Media */
 .media {
   aspect-ratio: 16 / 9;
+  position: relative;
   background: linear-gradient(180deg, rgba(129, 199, 132, 0.1), rgba(46, 125, 50, 0.05));
 }
 
@@ -166,4 +167,3 @@ html, body {
     transform: none;
   }
 }
-

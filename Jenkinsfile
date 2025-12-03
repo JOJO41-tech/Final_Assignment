@@ -58,8 +58,8 @@ pipeline {
                         sh """
                             cat > .env <<EOF
 MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASS}
-MYSQL_DATABASE=attractions_db
-MYSQL_USER=attractions_user
+MYSQL_DATABASE=dit312_6703466
+MYSQL_USER=dit312_user
 MYSQL_PASSWORD=${MYSQL_PASS}
 MYSQL_PORT=3306
 PHPMYADMIN_PORT=8888
@@ -114,8 +114,8 @@ EOF
                         # Wait for API to be ready (max 180 seconds)
                         timeout 180 bash -c 'until curl -f http://localhost:3001/health; do sleep 2; done' || exit 1
 
-                        # Check attractions endpoint
-                        curl -f http://localhost:3001/attractions || exit 1
+                        # Check videogames endpoint
+                        curl -f http://localhost:3001/videogames || exit 1
 
                         echo "Health check passed!"
                     """
