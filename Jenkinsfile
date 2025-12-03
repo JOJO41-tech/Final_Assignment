@@ -61,21 +61,21 @@ pipeline {
                         string(credentialsId: 'MYSQL_ROOT_PASSWORD', variable: 'MYSQL_ROOT_PASS'),
                         string(credentialsId: 'MYSQL_PASSWORD', variable: 'MYSQL_PASS')
                     ]) {
-                        sh """
+                        sh '''
                             cat > .env <<EOF
-MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASS}
+MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASS
 MYSQL_DATABASE=dit312_6703466
 MYSQL_USER=dit312_user
-MYSQL_PASSWORD=${MYSQL_PASS}
+MYSQL_PASSWORD=$MYSQL_PASS
 MYSQL_PORT=3306
 PHPMYADMIN_PORT=8888
 API_PORT=3001
 DB_PORT=3306
 FRONTEND_PORT=3000
 NODE_ENV=production
-API_HOST=${params.API_HOST}
+API_HOST=''' + "${params.API_HOST}" + '''
 EOF
-                        """
+                        '''
                     }
 
                     echo ".env file created successfully"
@@ -97,7 +97,7 @@ EOF
 
                     retry(2) {
                         timeout(time: 20, unit: 'MINUTES') {
-                            sh "docker compose build --no-cache"
+                            sh "DOCKER_BUILDKIT=0 COMPOSE_DOCKER_CLI_BUILD=1 docker compose build --no-cache --progress=plain"
                         }
                     }
 

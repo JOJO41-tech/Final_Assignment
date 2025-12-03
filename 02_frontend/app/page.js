@@ -7,6 +7,8 @@ export default function Page() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState("title");
 
   useEffect(() => {
     async function getVideogames() {
@@ -42,19 +44,59 @@ export default function Page() {
     );
   }
 
+  const filtered = Array.isArray(rows)
+    ? rows.filter((x) => {
+        const q = query.trim().toLowerCase();
+        if (!q) return true;
+        return (
+          String(x.title).toLowerCase().includes(q) ||
+          String(x.genre).toLowerCase().includes(q) ||
+          String(x.platform).toLowerCase().includes(q)
+        );
+      })
+    : [];
+
+  const displayed = filtered.sort((a, b) => {
+    if (sort === "year_desc") return Number(b.year) - Number(a.year);
+    const ta = String(a.title).toLowerCase();
+    const tb = String(b.title).toLowerCase();
+    if (ta < tb) return -1;
+    if (ta > tb) return 1;
+    return 0;
+  });
+
   return (
     <main className="container">
       <header className="header">
-        <h1 className="title">Pyi Thein Kyaw(JOJO) 6703466</h1>
-        <h1 className="title">Video Games</h1>
-        <p className="subtitle">Browse popular titles from the database</p>
+        <p className="kicker">DIT312 – CI/CD with Jenkins + Docker</p>
+        <h1 className="title">Video Game Library</h1>
+        <p className="subtitle">Search, sort, and explore seeded data</p>
+        <div className="toolbar">
+          <input
+            className="input"
+            type="search"
+            placeholder="Search title, genre, platform"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            aria-label="Search videogames"
+          />
+          <select
+            className="select"
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            aria-label="Sort"
+          >
+            <option value="title">Title A→Z</option>
+            <option value="year_desc">Year (newest)</option>
+          </select>
+        </div>
       </header>
 
       {!rows || rows.length === 0 ? (
         <div className="empty">No videogames found.</div>
       ) : (
         <section className="grid" aria-live="polite">
-          {rows.map((x) => (
+          {displayed.map((x) => (
             <article key={x.id} className="card" tabIndex={0}>
               {x.coverimage && (
                 <div className="media">
@@ -71,6 +113,11 @@ export default function Page() {
               <div className="body">
                 <h3 className="card-title">{x.title}</h3>
                 {x.description && <p className="detail">{x.description}</p>}
+                <div className="badge-row">
+                  <span className="pill">{x.genre}</span>
+                  <span className="pill">{x.platform}</span>
+                  <span className="pill">{x.year}</span>
+                </div>
                 <div className="meta">
                   <small>
                     Genre: <span className="code">{x.genre}</span> · Platform: {" "}

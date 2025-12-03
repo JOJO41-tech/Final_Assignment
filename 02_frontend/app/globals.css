@@ -1,13 +1,13 @@
 
 
 :root {
-  --bg: #f6fdf8;
-  --text: #0a2e17;
-  --muted: #5f7a68;
-  --card: #ffffff;
-  --ring: #81c784; /* soft green accent */
-  --border: #cde8d3;
-  --shadow: 0 8px 24px rgba(104, 187, 120, 0.15);
+  --bg: #0f172a;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --card: #0b1220;
+  --ring: #60a5fa;
+  --border: #1f2937;
+  --shadow: 0 12px 32px rgba(2, 132, 199, 0.18);
 }
 
 /* Reset + layout */
@@ -18,7 +18,7 @@
 }
 
 html, body {
-  background: var(--bg);
+  background: radial-gradient(1200px 400px at 30% -10%, #17223a 0%, #0f172a 40%), var(--bg);
   color: var(--text);
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   min-height: 100%;
@@ -35,7 +35,7 @@ html, body {
 /* Header */
 .header {
   display: grid;
-  gap: .25rem;
+  gap: .5rem;
   margin-bottom: 1.25rem;
 }
 
@@ -50,6 +50,34 @@ html, body {
 .subtitle {
   color: var(--muted);
   font-size: .95rem;
+}
+
+.kicker {
+  color: var(--ring);
+  font-weight: 600;
+  letter-spacing: .02em;
+}
+
+.toolbar {
+  display: grid;
+  grid-template-columns: 1fr 180px;
+  gap: .75rem;
+  margin-top: .5rem;
+}
+
+.input, .select {
+  appearance: none;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  padding: .65rem .8rem;
+  outline: none;
+}
+
+.input:focus, .select:focus {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 30%, transparent);
 }
 
 /* Empty state */
@@ -99,7 +127,7 @@ html, body {
 .media {
   aspect-ratio: 16 / 9;
   position: relative;
-  background: linear-gradient(180deg, rgba(129, 199, 132, 0.1), rgba(46, 125, 50, 0.05));
+  background: linear-gradient(180deg, rgba(96,165,250,0.14), rgba(2,132,199,0.07));
 }
 
 .img {
@@ -138,6 +166,22 @@ html, body {
   margin-top: .15rem;
   color: var(--muted);
   font-size: .85rem;
+}
+
+.badge-row {
+  display: flex;
+  gap: .35rem;
+  flex-wrap: wrap;
+  margin-top: .35rem;
+}
+
+.pill {
+  background: color-mix(in oklab, var(--ring) 18%, var(--card));
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 999px;
+  font-size: .78rem;
+  padding: .2rem .6rem;
 }
 
 .code {

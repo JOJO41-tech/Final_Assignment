@@ -1,7 +1,10 @@
 const express = require('express');
 const mysql = require('mysql2/promise');
 const cors = require('cors');
-require('dotenv').config();
+const dotenv = require('dotenv');
+const path = require('path');
+dotenv.config({ path: path.join(__dirname, '.env.local') });
+dotenv.config();
 
 const app = express();
 app.use(express.json());
